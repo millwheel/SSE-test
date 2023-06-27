@@ -20,8 +20,7 @@ public class SseService {
 
 
     public SseEmitter add(Integer userId) {
-        SseEmitter emitter;
-        emitter = new SseEmitter();
+        SseEmitter emitter = new SseEmitter();
         emitterList.put(userId, emitter);
         log.info("new emitter added: {}", emitter);
         log.info("emitter list:{}", emitterList);
