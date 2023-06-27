@@ -25,6 +25,7 @@ public class SseController {
     public SseEmitter connect(){
         Integer userId = 1;
         SseEmitter sseEmitter = sseService.add(userId);
+        sseService.showCount();
         return sseEmitter;
     }
 
@@ -32,6 +33,6 @@ public class SseController {
     @PostMapping("/sse")
     @ResponseStatus(HttpStatus.OK)
     public void order(){
-        sseService.count();
+        sseService.addCount();
     }
 }

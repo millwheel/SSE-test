@@ -17,8 +17,6 @@ public class SseService {
     private static final AtomicLong emitterCounter = new AtomicLong();
     ConcurrentHashMap<Integer, SseEmitter> emitterList = new ConcurrentHashMap<>();
 
-
-
     public SseEmitter add(Integer userId) {
         SseEmitter emitter = new SseEmitter();
         emitterList.put(userId, emitter);
@@ -29,17 +27,26 @@ public class SseService {
             log.info("emitter deleted: {}", emitter);
         });
         emitter.onTimeout(emitter::complete);
-        long count = emitterCounter.get();
         try{
             emitter.send(SseEmitter.event().name("connect").data("connected"));
-            emitter.send(SseEmitter.event().name("count").data(count));
         } catch (IOException e){
             throw new RuntimeException(e);
         }
         return emitter;
     }
 
-    public void count() {
+    public void showCount() {
+        long count = emitterCounter.get();
+        emitterList.forEachValue(Long.MAX_VALUE, emitter -> {
+            try {
+                emitter.send(SseEmitter.event().name("count").data(count));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    public void addCount() {
         long count = emitterCounter.incrementAndGet();
         emitterList.forEachValue(Long.MAX_VALUE, emitter -> {
             try {
